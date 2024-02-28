@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from data_preprocessing import convert2onelvl
+from scripts.streamlit.data_preprocessing import convert2onelvl
 import streamlit as st
 
 
