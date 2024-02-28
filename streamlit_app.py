@@ -65,7 +65,7 @@ def up_the_tree():
 
 def to_root():
     st.session_state.target_node = 'root'
-    st.session_state.parent_stack = []
+    st.session_state.parents_stack = []
     update_mask()
     return
 
