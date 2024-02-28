@@ -112,14 +112,12 @@ def find_children():
 if __name__ == "__main__":
     st.set_page_config(layout="wide")
     col1, col2, col3, col4 = st.columns([0.25, 0.25, 0.25, 0.25])
+
     # uploading data at the first launch
     check_data()
 
     # find children
     children_nodes = find_children()
-
-    # adding a navigation and description container if not at the root
-    # if st.session_state.target_node != 'root':
 
     logits_value = 0
     for k, v in st.session_state.mask.items():
@@ -127,12 +125,6 @@ if __name__ == "__main__":
                 k[:len(st.session_state.data[st.session_state.target_node]["udc"])]):
             logits_value = v
 
-    # with st.container():
-
-
-
-
-    # add button children
     with col1:
         st.write('### Навигация: ')
         st.button('в начало', on_click=to_root, use_container_width=True)
@@ -161,9 +153,8 @@ if __name__ == "__main__":
         st.write('### Родительские вершины: ')
         if len(st.session_state.parents_stack) > 0:
             for parent in st.session_state.parents_stack:
-                st.write(f'{st.session_state.data[parent]["udc"]} -- {st.session_state.data[parent]["name"]}')
-        else:
-            st.write('Отсутствуют')
+                if st.session_state.data[parent]["udc"] != "root":
+                    st.write(f'{st.session_state.data[parent]["udc"]} -- {st.session_state.data[parent]["name"]}')
 
     with col3:
         st.write('### Информация о вершине: ')
