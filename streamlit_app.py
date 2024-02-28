@@ -9,8 +9,8 @@ import streamlit as st
 #  PYTHONPATH="./" streamlit run scripts/streamlit/streamlit_run.py
 
 
-BASE_DIR = Path(__file__).parent.parent.parent.absolute()
-STREAMLIT_DIR = BASE_DIR / 'scripts' / 'streamlit'
+BASE_DIR = Path(__file__).parent.absolute()
+STREAMLIT_DIR = BASE_DIR
 JSON_PATH = STREAMLIT_DIR / 'udc_teacode_utf_onelvl.json'
 
 MASK = {
