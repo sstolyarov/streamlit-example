@@ -108,24 +108,26 @@ if __name__ == "__main__":
     children_nodes = find_children()
 
     # adding a navigation and description container if not at the root
-    if st.session_state.target_node != 'root':
+    # if st.session_state.target_node != 'root':
 
-        logits_value = 0
-        for k, v in st.session_state.mask.items():
-            if (st.session_state.data[st.session_state.target_node]["udc"] in
-                    k[:len(st.session_state.data[st.session_state.target_node]["udc"])]):
-                logits_value = v
+    logits_value = 0
+    for k, v in st.session_state.mask.items():
+        if (st.session_state.data[st.session_state.target_node]["udc"] in
+                k[:len(st.session_state.data[st.session_state.target_node]["udc"])]):
+            logits_value = v
 
-        with st.container():
-            st.button('в начало', on_click=to_root)
-            st.button('вверх', on_click=up_the_tree)
-            st.write(f'Код УДК: {st.session_state.data[st.session_state.target_node]["udc"]} // '
-                     f'Название: {st.session_state.data[st.session_state.target_node]["name"]} // '
-                     f'LOGITS VALUE: {logits_value}')
-            st.write('Потомки:')
+    # with st.container():
+
+    st.write(f'Код УДК: {st.session_state.data[st.session_state.target_node]["udc"]}')
+    st.write(f'Название: {st.session_state.data[st.session_state.target_node]["name"]}')
+    st.write(f'LOGITS VALUE: {logits_value}')
 
     # add button children
-    with st.container():
+    with st.sidebar:
+        st.write('Навигация:')
+        st.button('в начало', on_click=to_root, use_container_width=True)
+        st.button('вверх', on_click=up_the_tree, use_container_width=True)
+        st.write('Подвершины:')
         for node in children_nodes:
 
             logits_value = None
@@ -139,7 +141,8 @@ if __name__ == "__main__":
                 f'{node["udc"]} -- {node["name"]} -- LOGITS VALUE: {logits_value}',
                 on_click=set_target_node,
                 args=[node['udc']],
-                type=type_button
+                type=type_button,
+                use_container_width=True
             )
         if not children_nodes:
             st.write('отсутствуют')
