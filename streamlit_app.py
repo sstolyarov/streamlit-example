@@ -134,10 +134,10 @@ if __name__ == "__main__":
 
     # add button children
     with col1:
-        st.write('## Навигация: ##')
+        st.write('### Навигация: ')
         st.button('в начало', on_click=to_root, use_container_width=True)
         st.button('вверх', on_click=up_the_tree, use_container_width=True)
-        st.write('## Подвершины: ##')
+        st.write('### Подвершины: ')
         for node in children_nodes:
 
             logits_value = None
@@ -158,7 +158,7 @@ if __name__ == "__main__":
             st.write('отсутствуют')
 
     with col2:
-        st.write('## Родительские вершины: ##')
+        st.write('### Родительские вершины: ')
         if len(st.session_state.parents_stack) > 0:
             for parent in st.session_state.parents_stack:
                 st.write(f'{st.session_state.data[parent]["udc"]} -- {st.session_state.data[parent]["name"]}')
@@ -166,7 +166,7 @@ if __name__ == "__main__":
             st.write('Отсутствуют')
 
     with col3:
-        st.write('## Информация о вершине: ##')
+        st.write('### Информация о вершине: ')
         st.write(f'**Код УДК:** {st.session_state.data[st.session_state.target_node]["udc"]}')
         st.write(f'**Название:** {st.session_state.data[st.session_state.target_node]["name"]}')
         st.write(f'**LOGITS VALUE:** {logits_value}')
