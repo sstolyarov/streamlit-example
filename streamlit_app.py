@@ -41,7 +41,7 @@ def load_data(file_path):
 
 
 def update_mask():
-    if st.session_state.target_node != 'root':
+    if st.session_state.target_node and st.session_state.target_node != 'root':
         new_mask = dict()
         for k, v in MASK.items():
             if st.session_state.target_node == k[:len(st.session_state.target_node)]:
@@ -55,18 +55,23 @@ def update_mask():
 
 
 def up_the_tree():
-    st.session_state.target_node = st.session_state.child_parent[st.session_state.target_node]
-    update_mask()
+    if st.session_state.target_node != 'root':
+        st.session_state.target_node = st.session_state.child_parent[st.session_state.target_node]
+        if len(st.session_state.parents_stack) > 0:
+            st.session_state.parents_stack.pop()
+        update_mask()
     return
 
 
 def to_root():
     st.session_state.target_node = 'root'
+    st.session_state.parent_stack = []
     update_mask()
     return
 
 
 def set_target_node(target_node):
+    st.session_state.parents_stack.append(st.session_state.target_node)
     st.session_state.target_node = target_node
     update_mask()
     return
@@ -79,11 +84,15 @@ def check_data():
     if 'child_parent' not in st.session_state:
         st.session_state.child_parent = {k: v["parent"] for k, v in st.session_state.data.items()}
 
+    if 'parents_stack' not in st.session_state:
+        st.session_state.parents_stack = []
+
     if 'target_node' not in st.session_state:
         st.session_state.target_node = 'root'
 
     if 'mask' not in st.session_state:
         st.session_state.mask = MASK
+
 
     return
 
@@ -101,6 +110,8 @@ def find_children():
 
 
 if __name__ == "__main__":
+    st.set_page_config(layout="wide")
+    col1, col2, col3, col4 = st.columns([0.25, 0.25, 0.25, 0.25])
     # uploading data at the first launch
     check_data()
 
@@ -118,16 +129,15 @@ if __name__ == "__main__":
 
     # with st.container():
 
-    st.write(f'Код УДК: {st.session_state.data[st.session_state.target_node]["udc"]}')
-    st.write(f'Название: {st.session_state.data[st.session_state.target_node]["name"]}')
-    st.write(f'LOGITS VALUE: {logits_value}')
+
+
 
     # add button children
-    with st.sidebar:
-        st.write('Навигация:')
+    with col1:
+        st.write('## Навигация: ##')
         st.button('в начало', on_click=to_root, use_container_width=True)
         st.button('вверх', on_click=up_the_tree, use_container_width=True)
-        st.write('Подвершины:')
+        st.write('## Подвершины: ##')
         for node in children_nodes:
 
             logits_value = None
@@ -146,3 +156,23 @@ if __name__ == "__main__":
             )
         if not children_nodes:
             st.write('отсутствуют')
+
+    with col2:
+        st.write('## Родительские вершины: ##')
+        if len(st.session_state.parents_stack) > 0:
+            for parent in st.session_state.parents_stack:
+                st.write(f'{st.session_state.data[parent]["udc"]} -- {st.session_state.data[parent]["name"]}')
+        else:
+            st.write('Отсутствуют')
+
+    with col3:
+        st.write('## Информация о вершине: ##')
+        st.write(f'**Код УДК:** {st.session_state.data[st.session_state.target_node]["udc"]}')
+        st.write(f'**Название:** {st.session_state.data[st.session_state.target_node]["name"]}')
+        st.write(f'**LOGITS VALUE:** {logits_value}')
+
+    with col4:
+        st.text_area('**Автор**')
+        st.text_area('**Название**')
+        st.text_area('**Аннотация**', height=400)
+        st.button('отправить')
